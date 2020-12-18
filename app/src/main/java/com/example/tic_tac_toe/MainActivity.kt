@@ -135,7 +135,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         for (btnKey in 1..9) {
             if (player1.contains(btnKey) || player2.contains(btnKey))
             {
-
+                //don't add
             }
             else
             {
