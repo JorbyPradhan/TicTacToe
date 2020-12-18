@@ -13,15 +13,15 @@ import kotlin.collections.ArrayList
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
 
-    var Player1 = ArrayList<Int>()
-    var Player2 = ArrayList<Int>()
+    var player1 = ArrayList<Int>()
+    var player2 = ArrayList<Int>()
     var ActivePlayer = 1
+    var activePlayer : Boolean =  true
     var player1Win = 0
     var player2Win = 0
     var matchResult = 0
-    //var setPlayer = 1
-
-    //private val player1Turn = true
+    var winnerResult : Boolean = false
+    var count : Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,9 +61,9 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         btn_2_1.text = ""
         btn_2_2.text = ""
 
-        Player1.clear()
-        Player2.clear()
-        ActivePlayer = 1
+        player1.clear()
+        player2.clear()
+        activePlayer = true
         matchResult = 0
 
         btn_0_0.isEnabled = true
@@ -75,10 +75,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         btn_2_0.isEnabled = true
         btn_2_1.isEnabled = true
         btn_2_2.isEnabled = true
-
-     //   setPlayer = 1
-        //PVP.setBackgroundColor(Color.CYAN)
-       // PVC.setBackgroundColor(android.R.drawable.btn_default)
     }
 
     override fun onClick(v: View?) {
@@ -97,23 +93,26 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             R.id.btn_2_1 -> btnKey = 8
             R.id.btn_2_2 -> btnKey = 9
         }
-        playGame(btnKey,btnSelected)
+        playGame(btnKey, btnSelected)
     }
 
     private fun playGame(btnKey: Int, btnSelected: Button) {
-        if (ActivePlayer == 1)
+        if (activePlayer)
         {
            btnSelected.text = "X"
             btnSelected.setBackgroundColor(Color.GREEN)
-            Player1.add(btnKey)
-            ActivePlayer = 2
+            player1.add(btnKey)
+            activePlayer = false
                 try {
                         checkWinner()
-                        autoPlay()
-
-                }catch (ex:Exception)
+                        if (matchResult == 1){
+                            updatePoint()
+                        }else {
+                            autoPlay()
+                        }
+                }catch (ex: Exception)
                 {
-                    Toast.makeText(this,"Game Over",Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Game Over", Toast.LENGTH_SHORT).show()
                 }
 
             }
@@ -124,8 +123,8 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             }else {
                 btnSelected.text = "O"
                 btnSelected.setBackgroundColor(Color.RED)
-                Player2.add(btnKey)
-                ActivePlayer = 1
+                player2.add(btnKey)
+                activePlayer = true
             }
         }
         btnSelected.isEnabled = false
@@ -134,9 +133,10 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun autoPlay() {
+        var cellId: Int
         val empty = ArrayList<Int>()
         for (btnKey in 1..9) {
-            if (Player1.contains(btnKey) || Player2.contains(btnKey))
+            if (player1.contains(btnKey) || player2.contains(btnKey))
             {
 
             }
@@ -147,8 +147,12 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         }
 
         val r = Random()
-        val randomIndex = r.nextInt(empty.size-0)+0
-        val cellId = empty[randomIndex]
+        cellId = if (player1.size != 1) {
+            getWeekMl(empty)
+        }else {
+            val randomIndex = r.nextInt(empty.size - 0) + 0
+            empty[randomIndex]
+        }
 
         val btnSelect:Button?
         btnSelect = when(cellId) {
@@ -164,7 +168,237 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             else -> btn_0_0
         }
 
-        playGame(cellId,btnSelect)
+        playGame(cellId, btnSelect)
+    }
+
+    private fun getWeekMl(empty: ArrayList<Int>) : Int {
+        val r = Random()
+        val randomIndex = r.nextInt(empty.size - 0)+0
+        if (player1.contains(1) && player1.contains(2)){
+            return if (empty.contains(3)){
+                3
+            }else{
+                //player2.add(randomIndex)
+                empty[randomIndex]
+            }
+
+        }
+        if (player1.contains(1) && player1.contains(3)){
+            return if (empty.contains(2)){
+                //player2.add(2)
+                2
+            }else{
+                player2.add(randomIndex)
+                empty[randomIndex]
+            }
+        }
+         if (player1.contains(2) && player1.contains(3)){
+             return if (empty.contains(1)){
+                 //player2.add(1)
+                 1
+             }else{
+                 //player2.add(randomIndex)
+                 empty[randomIndex]
+             }
+        }
+        if (player1.contains(1) && player1.contains(4)){
+            //block 3
+            return if (empty.contains(7)){
+                7
+            }else{
+                //player2.add(randomIndex)
+                empty[randomIndex]
+            }
+
+        }
+        if (player1.contains(1) && player1.contains(7)){
+            return if (empty.contains(4)){
+                //player2.add(2)
+                4
+            }else{
+                player2.add(randomIndex)
+                empty[randomIndex]
+            }
+        }
+        if (player1.contains(4) && player1.contains(7)){
+            return if (empty.contains(1)){
+                //player2.add(1)
+                1
+            }else{
+                //player2.add(randomIndex)
+                empty[randomIndex]
+            }
+        }
+        if (player1.contains(1) && player1.contains(5)){
+            //block 3
+            return if (empty.contains(9)){
+                9
+            }else{
+                //player2.add(randomIndex)
+                empty[randomIndex]
+            }
+
+        }
+        if (player1.contains(1) && player1.contains(9)){
+            return if (empty.contains(5)){
+                //player2.add(2)
+                5
+            }else{
+                player2.add(randomIndex)
+                empty[randomIndex]
+            }
+        }
+        if (player1.contains(5) && player1.contains(9)){
+            return if (empty.contains(1)){
+                //player2.add(1)
+                1
+            }else{
+                //player2.add(randomIndex)
+                empty[randomIndex]
+            }
+        }
+        if (player1.contains(2) && player1.contains(5)){
+            //block 3
+            return if (empty.contains(8)){
+                8
+            }else{
+                //player2.add(randomIndex)
+                empty[randomIndex]
+            }
+
+        }
+        if (player1.contains(2) && player1.contains(8)){
+            return if (empty.contains(5)){
+                //player2.add(2)
+                5
+            }else{
+                player2.add(randomIndex)
+                empty[randomIndex]
+            }
+        }
+        if (player1.contains(5) && player1.contains(8)){
+            return if (empty.contains(2)){
+                //player2.add(1)
+                2
+            }else{
+                //player2.add(randomIndex)
+                empty[randomIndex]
+            }
+        }
+         //
+        if (player1.contains(3) && player1.contains(6)){
+            //block 3
+            return if (empty.contains(9)){
+                9
+            }else{
+                //player2.add(randomIndex)
+                empty[randomIndex]
+            }
+
+        }
+        if (player1.contains(3) && player1.contains(9)){
+            return if (empty.contains(6)){
+                //player2.add(2)
+                6
+            }else{
+                player2.add(randomIndex)
+                empty[randomIndex]
+            }
+        }
+        if (player1.contains(6) && player1.contains(9)){
+            return if (empty.contains(3)){
+                //player2.add(1)
+                3
+            }else{
+                //player2.add(randomIndex)
+                empty[randomIndex]
+            }
+        }
+        if (player1.contains(3) && player1.contains(5)){
+            //block 3
+            return if (empty.contains(7)){
+                7
+            }else{
+                //player2.add(randomIndex)
+                empty[randomIndex]
+            }
+
+        }
+        if (player1.contains(5) && player1.contains(7)){
+            return if (empty.contains(3)){
+                //player2.add(2)
+                3
+            }else{
+                player2.add(randomIndex)
+                empty[randomIndex]
+            }
+        }
+        if (player1.contains(3) && player1.contains(7)){
+            return if (empty.contains(5)){
+                //player2.add(1)
+                5
+            }else{
+                //player2.add(randomIndex)
+                empty[randomIndex]
+            }
+        }
+        if (player1.contains(4) && player1.contains(5)){
+            //block 3
+            return if (empty.contains(6)){
+                6
+            }else{
+                //player2.add(randomIndex)
+                empty[randomIndex]
+            }
+
+        }
+        if (player1.contains(4) && player1.contains(6)){
+            return if (empty.contains(5)){
+                //player2.add(2)
+                5
+            }else{
+                player2.add(randomIndex)
+                empty[randomIndex]
+            }
+        }
+        if (player1.contains(5) && player1.contains(6)){
+            return if (empty.contains(4)){
+                //player2.add(1)
+                4
+            }else{
+                //player2.add(randomIndex)
+                empty[randomIndex]
+            }
+        }
+        if (player1.contains(7) && player1.contains(9)){
+            //block 3
+            return if (empty.contains(8)){
+                8
+            }else{
+                //player2.add(randomIndex)
+                empty[randomIndex]
+            }
+
+        }
+        if (player1.contains(7) && player1.contains(8)){
+            return if (empty.contains(9)){
+                //player2.add(2)
+                9
+            }else{
+                player2.add(randomIndex)
+                empty[randomIndex]
+            }
+        }
+        return if (player1.contains(8) && player1.contains(9)){
+            if (empty.contains(7)){
+                7
+            }else{
+                //player2.add(randomIndex)
+                empty[randomIndex]
+            }
+        } else{
+            empty[randomIndex]
+        }
     }
 
     @SuppressLint("SetTextI18n")
@@ -173,82 +407,82 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         var winner = -1
 
         //row1
-        if (Player1.contains(1) && Player1.contains(2) && Player1.contains(3))
+        if (player1.contains(1) && player1.contains(2) && player1.contains(3))
         {
             winner = 1
         }
-        if (Player2.contains(1) && Player2.contains(2) && Player2.contains(3))
+        if (player2.contains(1) && player2.contains(2) && player2.contains(3))
         {
             winner = 2
         }
 
         //row2
-        if (Player1.contains(4) && Player1.contains(5) && Player1.contains(6))
+        if (player1.contains(4) && player1.contains(5) && player1.contains(6))
         {
             winner = 1
         }
-        if (Player2.contains(4) && Player2.contains(5) && Player2.contains(6))
+        if (player2.contains(4) && player2.contains(5) && player2.contains(6))
         {
             winner = 2
         }
 
         //row3
-        if (Player1.contains(7) && Player1.contains(8) && Player1.contains(9))
+        if (player1.contains(7) && player1.contains(8) && player1.contains(9))
         {
             winner = 1
         }
-        if (Player2.contains(7) && Player2.contains(8) && Player2.contains(9))
+        if (player2.contains(7) && player2.contains(8) && player2.contains(9))
         {
             winner = 2
         }
 
         //col1
-        if (Player1.contains(1) && Player1.contains(4) && Player1.contains(7))
+        if (player1.contains(1) && player1.contains(4) && player1.contains(7))
         {
             winner = 1
         }
-        if (Player2.contains(1) && Player2.contains(4) && Player2.contains(7))
+        if (player2.contains(1) && player2.contains(4) && player2.contains(7))
         {
             winner = 2
         }
 
         //col2
-        if (Player1.contains(2) && Player1.contains(5) && Player1.contains(8))
+        if (player1.contains(2) && player1.contains(5) && player1.contains(8))
         {
             winner = 1
         }
-        if (Player2.contains(2) && Player2.contains(5) && Player2.contains(8))
+        if (player2.contains(2) && player2.contains(5) && player2.contains(8))
         {
             winner = 2
         }
 
         //col3
-        if (Player1.contains(3) && Player1.contains(6) && Player1.contains(9))
+        if (player1.contains(3) && player1.contains(6) && player1.contains(9))
         {
             winner = 1
         }
-        if (Player2.contains(3) && Player2.contains(6) && Player2.contains(9))
+        if (player2.contains(3) && player2.contains(6) && player2.contains(9))
         {
             winner = 2
         }
 
         //cross1
-        if (Player1.contains(1) && Player1.contains(5) && Player1.contains(9))
+        if (player1.contains(1) && player1.contains(5) && player1.contains(9))
         {
             winner = 1
     }
-        if (Player2.contains(1) && Player2.contains(5) && Player2.contains(9))
+        if (player2.contains(1) && player2.contains(5) && player2.contains(9))
         {
             winner = 2
 
         }
 
         //cross2
-        if (Player1.contains(3) && Player1.contains(5) && Player1.contains(7))
+        if (player1.contains(3) && player1.contains(5) && player1.contains(7))
         {
             winner = 1
         }
-         if (Player2.contains(3) && Player2.contains(5) && Player2.contains(7)) {
+         if (player2.contains(3) && player2.contains(5) && player2.contains(7)) {
             winner = 2
 
         }
@@ -272,6 +506,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun player1WinGame(){
         player1Win++
         Toast.makeText(this, "Player One Won!!", Toast.LENGTH_SHORT).show()
@@ -288,14 +523,20 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     @SuppressLint("SetTextI18n")
     private fun updatePoint() {
-        var point1 = player1Win/3
+
         var point2 = player2Win/2
-        if (player1Win == 1 && point1 == 0){
+        var point1 = player1Win/2
+        if (player1Win == 2 && point1 == 0){
             point1 = 1
         }
+        if (player1Win >2 && point1 == 1){
+            point1 = 2
+        }
+
         if (player2Win == 1 && point2 == 0){
             point2 = 1
         }
+
         txt_player_one.text = "Player 1 : $point1"
         txt_player_two.text= "Player 2 : $point2"
     }
