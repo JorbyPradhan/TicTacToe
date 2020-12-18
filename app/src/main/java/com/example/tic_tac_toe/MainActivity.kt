@@ -15,13 +15,10 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     var player1 = ArrayList<Int>()
     var player2 = ArrayList<Int>()
-    var ActivePlayer = 1
     var activePlayer : Boolean =  true
     var player1Win = 0
     var player2Win = 0
     var matchResult = 0
-    var winnerResult : Boolean = false
-    var count : Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
